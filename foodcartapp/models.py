@@ -108,17 +108,20 @@ class RestaurantMenuItem(models.Model):
         return f"{self.restaurant.name} - {self.product.name}"
 
 
-class Customer(models.Model):
+class Order(models.Model):
     fistname = models.CharField(
         "имя",
         max_length=50,
+        blank=True,
     )
     lastname = models.CharField(
         "фамилия",
         max_length=50,
+        blank=True,
     )
     phonenumber = PhoneNumberField(
         "телефон",
+        blank=True,
     )
     address = models.TextField(
         "адрес доставки",
@@ -127,27 +130,11 @@ class Customer(models.Model):
     )
 
     class Meta:
-        verbose_name = "заказчик"
-        verbose_name_plural = "заказчики"
-
-    def __str__(self):
-        return f"{self.fistname} {self.lastname}"
-
-
-class Order(models.Model):
-    customer = models.ForeignKey(
-        Customer,
-        on_delete=models.CASCADE,
-        related_name="customer_orders",
-        verbose_name="заказчик",
-    )
-
-    class Meta:
         verbose_name = "заказ"
         verbose_name_plural = "заказы"
 
     def __str__(self):
-        return f"Заказ № {id} для {self.fistname} {self.lastname}"
+        return f"Заказ № {self.id} для {self.fistname} {self.lastname}"
 
 
 class OrderProducts(models.Model):
