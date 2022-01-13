@@ -4,6 +4,9 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.templatetags.static import static
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 
 from .models import Product
 from .models import Order
@@ -70,9 +73,17 @@ def product_list_api(request):
     )
 
 
+@api_view(["POST"])
 def register_order(request):
     # TODO это лишь заглушка
-    order_properties = json.loads(request.body.decode())
+    try:
+        order_properties = json.loads(request.body.decode())
+    except ValueError:
+        return JsonResponse(
+            {
+                "error": "bla bla bla",
+            }
+        )
 
     order = Order(
         fistname=order_properties["firstname"],
