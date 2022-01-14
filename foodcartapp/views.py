@@ -125,4 +125,4 @@ def register_order(request):
         ]
     )
 
-    return Response("just a test", status=status.HTTP_201_CREATED)
+    return Response(serializer.data, status=201)
