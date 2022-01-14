@@ -77,15 +77,45 @@ def product_list_api(request):
 @api_view(["POST"])
 def register_order(request):
     order_properties = request.data
+    print(order_properties)
 
-    if "products" not in order_properties.keys():
-        return Response({"error": "We have no Products"})
+    if ("products") not in order_properties.keys():
+        return Response({"error": "Data have no keys: products"})
+    if ("firstname") not in order_properties.keys():
+        return Response({"error": "Data have no keys: firstname"})
+    if ("lastname") not in order_properties.keys():
+        return Response({"error": "Data have no keys: lastname"})
+    if ("phonenumber") not in order_properties.keys():
+        return Response({"error": "Data have no keys: phonenumber"})
+    if ("address") not in order_properties.keys():
+        return Response({"error": "Data have no keys: phonenumber"})
 
     products = order_properties["products"]
 
-    if not isinstance(products, list):
+    if (
+        not isinstance(order_properties["firstname"], str)
+        or not order_properties["firstname"]
+    ):
+        return Response({"error": "Firstname is not the str or not present"})
+    if (
+        not isinstance(order_properties["lastname"], str)
+        or not order_properties["lastname"]
+    ):
+        return Response({"error": "Lastname is not the str or not present"})
+    if (
+        not isinstance(order_properties["phonenumber"], str)
+        or not order_properties["phonenumber"]
+    ):
+        return Response({"error": "Phonenumber is not the str or not present"})
+    if (
+        not isinstance(order_properties["address"], str)
+        or not order_properties["lastname"]
+    ):
+        return Response({"error": "Address is not the str or not present"})
+
+    if not isinstance(products, list) or not products:
         return Response({"error": "Products is not the list or not present"})
-    if not isinstance(products, type(None)):
+    if isinstance(products, type(None)):
         return Response({"error": "Products list is empty"})
 
     order = Order(
@@ -103,5 +133,5 @@ def register_order(request):
             quantity=product["quantity"],
         ).save()
 
-    return Response("just a test", status=status.HTTP_200_OK)
+    return Response("just a test", status=status.HTTP_201_CREATED)
     # JsonResponse({})
