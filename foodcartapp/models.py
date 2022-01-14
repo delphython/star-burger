@@ -112,21 +112,17 @@ class Order(models.Model):
     firstname = models.CharField(
         "имя",
         max_length=50,
-        blank=True,
     )
     lastname = models.CharField(
         "фамилия",
         max_length=50,
-        blank=True,
     )
     phonenumber = PhoneNumberField(
         "телефон",
-        blank=True,
     )
     address = models.TextField(
         "адрес доставки",
         max_length=200,
-        blank=True,
     )
 
     class Meta:
