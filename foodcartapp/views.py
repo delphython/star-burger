@@ -1,5 +1,6 @@
+import json
+
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from django.templatetags.static import static
 
 from rest_framework import status
@@ -103,33 +104,25 @@ def register_order(request):
     serializer = OrderSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    order_properties = serializer.validated_data
-
-    products = order_properties["products"]
-
     order = Order(
-        firstname=order_properties["firstname"],
-        lastname=order_properties["lastname"],
-        phonenumber=order_properties["phonenumber"],
-        address=order_properties["address"],
+        firstname=serializer.validated_data["firstname"],
+        lastname=serializer.validated_data["lastname"],
+        phonenumber=serializer.validated_data["phonenumber"],
+        address=serializer.validated_data["address"],
     )
     order.save()
+
+    products = serializer.validated_data["products"]
 
     OrderProducts.objects.bulk_create(
         [
             OrderProducts(
                 order=order,
-                **products,
+                product=product["product"],
+                quantity=product["quantity"],
             )
             for product in products
         ]
     )
-
-    # for product in products:
-    #     OrderProducts(
-    #         order=order,
-    #         product=get_object_or_404(Product, pk=product["product"]),
-    #         quantity=product["quantity"],
-    #     ).save()
 
     return Response("just a test", status=status.HTTP_201_CREATED)
