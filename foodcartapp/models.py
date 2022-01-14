@@ -130,7 +130,7 @@ class Order(models.Model):
         verbose_name_plural = "заказы"
 
     def __str__(self):
-        return f"Заказ № {self.id} для {self.fistname} {self.lastname}"
+        return f"Заказ № {self.id} для {self.firstname} {self.lastname}"
 
 
 class OrderProducts(models.Model):
