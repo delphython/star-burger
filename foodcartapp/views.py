@@ -1,12 +1,11 @@
-import json
-
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.templatetags.static import static
 
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.serializers import ModelSerializer
 
 
 from .models import Product
@@ -74,64 +73,63 @@ def product_list_api(request):
     )
 
 
+class OrderProductsSerializer(ModelSerializer):
+    class Meta:
+        model = OrderProducts
+        fields = [
+            "product",
+            "quantity",
+        ]
+
+
+class OrderSerializer(ModelSerializer):
+    products = OrderProductsSerializer(
+        many=True, write_only=True, allow_empty=False
+    )
+
+    class Meta:
+        model = Order
+        fields = [
+            "firstname",
+            "lastname",
+            "phonenumber",
+            "address",
+            "products",
+        ]
+
+
 @api_view(["POST"])
 def register_order(request):
-    order_properties = request.data
-    print(order_properties)
+    serializer = OrderSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
 
-    if ("products") not in order_properties.keys():
-        return Response({"error": "Data have no keys: products"})
-    if ("firstname") not in order_properties.keys():
-        return Response({"error": "Data have no keys: firstname"})
-    if ("lastname") not in order_properties.keys():
-        return Response({"error": "Data have no keys: lastname"})
-    if ("phonenumber") not in order_properties.keys():
-        return Response({"error": "Data have no keys: phonenumber"})
-    if ("address") not in order_properties.keys():
-        return Response({"error": "Data have no keys: phonenumber"})
+    order_properties = serializer.validated_data
 
     products = order_properties["products"]
 
-    if (
-        not isinstance(order_properties["firstname"], str)
-        or not order_properties["firstname"]
-    ):
-        return Response({"error": "Firstname is not the str or not present"})
-    if (
-        not isinstance(order_properties["lastname"], str)
-        or not order_properties["lastname"]
-    ):
-        return Response({"error": "Lastname is not the str or not present"})
-    if (
-        not isinstance(order_properties["phonenumber"], str)
-        or not order_properties["phonenumber"]
-    ):
-        return Response({"error": "Phonenumber is not the str or not present"})
-    if (
-        not isinstance(order_properties["address"], str)
-        or not order_properties["lastname"]
-    ):
-        return Response({"error": "Address is not the str or not present"})
-
-    if not isinstance(products, list) or not products:
-        return Response({"error": "Products is not the list or not present"})
-    if isinstance(products, type(None)):
-        return Response({"error": "Products list is empty"})
-
     order = Order(
-        fistname=order_properties["firstname"],
+        firstname=order_properties["firstname"],
         lastname=order_properties["lastname"],
         phonenumber=order_properties["phonenumber"],
         address=order_properties["address"],
     )
     order.save()
 
-    for product in products:
-        OrderProducts(
-            order=order,
-            product=get_object_or_404(Product, pk=product["product"]),
-            quantity=product["quantity"],
-        ).save()
+    OrderProducts.objects.bulk_create(
+        [
+            OrderProducts(
+                order=order,
+                **products,
+            )
+            for product in products
+        ]
+    )
+
+    # for product in products:
+    #     OrderProducts(
+    #         order=order,
+    #         product=get_object_or_404(Product, pk=product["product"]),
+    #         quantity=product["quantity"],
+    #     ).save()
 
     return Response("just a test", status=status.HTTP_201_CREATED)
-    # JsonResponse({})
