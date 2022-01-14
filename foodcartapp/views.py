@@ -6,6 +6,7 @@ from django.templatetags.static import static
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 
 
 from .models import Product
@@ -75,15 +76,17 @@ def product_list_api(request):
 
 @api_view(["POST"])
 def register_order(request):
-    # TODO это лишь заглушка
-    try:
-        order_properties = json.loads(request.body.decode())
-    except ValueError:
-        return JsonResponse(
-            {
-                "error": "bla bla bla",
-            }
-        )
+    order_properties = request.data
+
+    if "products" not in order_properties.keys():
+        return Response({"error": "We have no Products"})
+
+    products = order_properties["products"]
+
+    if not isinstance(products, list):
+        return Response({"error": "Products is not the list or not present"})
+    if not isinstance(products, type(None)):
+        return Response({"error": "Products list is empty"})
 
     order = Order(
         fistname=order_properties["firstname"],
@@ -93,11 +96,12 @@ def register_order(request):
     )
     order.save()
 
-    for product in order_properties["products"]:
+    for product in products:
         OrderProducts(
             order=order,
             product=get_object_or_404(Product, pk=product["product"]),
             quantity=product["quantity"],
         ).save()
 
-    return JsonResponse({})
+    return Response("just a test", status=status.HTTP_200_OK)
+    # JsonResponse({})
