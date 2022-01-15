@@ -162,6 +162,12 @@ class OrderProducts(models.Model):
     quantity = models.PositiveIntegerField(
         "количество",
     )
+    price = models.DecimalField(
+        "цена",
+        max_digits=8,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+    )
 
     class Meta:
         verbose_name = "товар в заказе"

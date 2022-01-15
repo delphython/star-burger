@@ -80,6 +80,7 @@ class OrderProductsSerializer(ModelSerializer):
         fields = [
             "product",
             "quantity",
+            "price",
         ]
 
 
@@ -101,6 +102,7 @@ class OrderSerializer(ModelSerializer):
 
 @api_view(["POST"])
 def register_order(request):
+    print(request.data)
     serializer = OrderSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
@@ -120,6 +122,7 @@ def register_order(request):
                 order=order,
                 product=product["product"],
                 quantity=product["quantity"],
+                price=product["price"] * product["quantity"],
             )
             for product in products
         ]
