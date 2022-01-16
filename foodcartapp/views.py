@@ -1,5 +1,4 @@
-import json
-
+from django.db import transaction
 from django.http import JsonResponse
 from django.templatetags.static import static
 
@@ -100,9 +99,9 @@ class OrderSerializer(ModelSerializer):
         ]
 
 
+@transaction.atomic
 @api_view(["POST"])
 def register_order(request):
-    print(request.data)
     serializer = OrderSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
