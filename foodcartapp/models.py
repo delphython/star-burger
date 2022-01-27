@@ -133,6 +133,7 @@ class Order(models.Model):
     )
     address = models.TextField(
         "адрес доставки",
+        blank=True,
     )
     ORDER_STATUSES_CHOICES = [
         ("НО", "Необработан"),
@@ -148,6 +149,10 @@ class Order(models.Model):
         choices=ORDER_STATUSES_CHOICES,
         default="НО",
         db_index=True,
+    )
+    comment = models.TextField(
+        "комментарий",
+        blank=True,
     )
 
     objects = OrderQuerySet.as_manager()
