@@ -121,6 +121,20 @@ class OrderQuerySet(models.QuerySet):
 
 
 class Order(models.Model):
+    ORDER_STATUSES_CHOICES = [
+        ("НО", "Необработан"),
+        ("ГО", "Готовится"),
+        ("ГВ", "Готов"),
+        ("ДО", "Доставляется"),
+        ("ДН", "Доставлен"),
+        ("ОН", "Отменен"),
+    ]
+    PAYMENT_METHODS_CHOICES = [
+        ("НО", "Не определен"),
+        ("НЛ", "Наличными"),
+        ("БК", "Банковской картой"),
+        ("ЭК", "Электронный кошелек"),
+    ]
     firstname = models.CharField(
         "имя",
         max_length=50,
@@ -136,18 +150,17 @@ class Order(models.Model):
         "адрес доставки",
         blank=True,
     )
-    ORDER_STATUSES_CHOICES = [
-        ("НО", "Необработан"),
-        ("ГО", "Готовится"),
-        ("ГВ", "Готов"),
-        ("ДО", "Доставляется"),
-        ("ДН", "Доставлен"),
-        ("ОН", "Отменен"),
-    ]
-    status = models.CharField(
+    order_status = models.CharField(
         "статус заказа",
         max_length=2,
         choices=ORDER_STATUSES_CHOICES,
+        default="НО",
+        db_index=True,
+    )
+    payment_method = models.CharField(
+        "способ оплаты",
+        max_length=2,
+        choices=PAYMENT_METHODS_CHOICES,
         default="НО",
         db_index=True,
     )
