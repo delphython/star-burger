@@ -133,7 +133,21 @@ class Order(models.Model):
     )
     address = models.TextField(
         "адрес доставки",
-        max_length=200,
+    )
+    ORDER_STATUSES_CHOICES = [
+        ("НО", "Необработан"),
+        ("ГО", "Готовится"),
+        ("ГВ", "Готов"),
+        ("ДО", "Доставляется"),
+        ("ДН", "Доставлен"),
+        ("ОН", "Отменен"),
+    ]
+    status = models.CharField(
+        "статус заказа",
+        max_length=2,
+        choices=ORDER_STATUSES_CHOICES,
+        default="НО",
+        db_index=True,
     )
 
     objects = OrderQuerySet.as_manager()
