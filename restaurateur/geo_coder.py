@@ -39,5 +39,4 @@ def fetch_coordinates(address, apikey=YANDEX_API_KEY):
 
     most_relevant = found_places[0]
     lon, lat = most_relevant["GeoObject"]["Point"]["pos"].split(" ")
-    # return lon, lat
     return lat, lon
