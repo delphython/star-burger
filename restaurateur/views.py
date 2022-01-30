@@ -8,7 +8,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
 
-from foodcartapp.models import Product, Restaurant, Order, RestaurantMenuItem
+from foodcartapp.models import Product, Restaurant, Order
+from .geo_coder import get_distance
 
 
 class Login(forms.Form):
@@ -124,7 +125,14 @@ def view_orders(request):
             menu_items__availability=True,
         ).distinct()
 
-        order.restaurants = restaurants
+        for restaurant in restaurants:
+            restaurant.distance = get_distance(
+                restaurant.address, order.address
+            )
+
+        order.restaurants = sorted(
+            restaurants, key=lambda restaurant: restaurant.distance
+        )
 
     return render(
         request,
