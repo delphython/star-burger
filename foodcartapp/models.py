@@ -114,8 +114,8 @@ class OrderQuerySet(models.QuerySet):
     def annotate_order_cost(self):
         return self.annotate(
             order_cost=Sum(
-                F("order_products__quantity")
-                * F("order_products__product__price")
+                F("product_orders__quantity")
+                * F("product_orders__product__price")
             )
         )
 
@@ -185,6 +185,14 @@ class Order(models.Model):
         null=True,
         db_index=True,
     )
+    restaurant = models.ForeignKey(
+        Restaurant,
+        related_name="orders",
+        verbose_name="ресторан",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
 
     objects = OrderQuerySet.as_manager()
 
@@ -200,13 +208,13 @@ class OrderProducts(models.Model):
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name="order_products",
+        related_name="product_orders",
         verbose_name="заказ",
     )
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        related_name="product_orders",
+        related_name="order_products",
         verbose_name="товар",
     )
     quantity = models.PositiveIntegerField(
