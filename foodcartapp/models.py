@@ -114,8 +114,8 @@ class OrderQuerySet(models.QuerySet):
     def annotate_order_cost(self):
         return self.annotate(
             order_cost=Sum(
-                F("product_orders__quantity")
-                * F("product_orders__product__price")
+                F("order_products__quantity")
+                * F("order_products__product__price")
             )
         )
 
@@ -208,7 +208,7 @@ class OrderProducts(models.Model):
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name="product_orders",
+        related_name="order_products",
         verbose_name="заказ",
     )
     product = models.ForeignKey(
