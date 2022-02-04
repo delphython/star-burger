@@ -16,7 +16,11 @@ def fetch_coordinates(address):
         return (place.lat, place.lon)
     else:
         lat, lon = fetch_coordinates_from_yandex(address)
-        save_place(address, lat, lon)
+        Place.objects.create(
+            address=address,
+            lat=lat,
+            lon=lon,
+        )
         return (lat, lon)
 
 
@@ -50,12 +54,3 @@ def fetch_coordinates_from_yandex(address, apikey=YANDEX_API_KEY):
     most_relevant = found_places[0]
     lon, lat = most_relevant["GeoObject"]["Point"]["pos"].split(" ")
     return lat, lon
-
-
-def save_place(address, lat, lon):
-    place = Place.objects.create(
-        address=address,
-        lat=lat,
-        lon=lon,
-    )
-    return place
