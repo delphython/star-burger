@@ -145,6 +145,7 @@ class Order(models.Model):
     )
     phonenumber = PhoneNumberField(
         "телефон",
+        db_index=True,
     )
     address = models.TextField(
         "адрес доставки",
