@@ -126,8 +126,9 @@ def view_orders(request):
         ).distinct()
 
         for restaurant in restaurants:
-            restaurant.distance = get_distance(
-                restaurant.address, order.address
+            distance = get_distance(restaurant.address, order.address)
+            restaurant.distance = (
+                f"{distance} км." if distance else "расстояние неизвестно"
             )
 
         order.restaurants = sorted(

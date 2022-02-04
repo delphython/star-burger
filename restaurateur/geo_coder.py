@@ -15,22 +15,31 @@ def fetch_coordinates(address):
     if place:
         return (place.lat, place.lon)
     else:
-        lat, lon = fetch_coordinates_from_yandex(address)
-        Place.objects.create(
-            address=address,
-            lat=lat,
-            lon=lon,
-        )
-        return (lat, lon)
+        coordinates = fetch_coordinates_from_yandex(address)
+        if coordinates:
+            lat, lon = coordinates
+            Place.objects.create(
+                address=address,
+                lat=lat,
+                lon=lon,
+            )
+            return (lat, lon)
+        else:
+            return None
 
 
 def get_distance(address_from, address_to):
-    return round(
-        distance.distance(
-            fetch_coordinates(address_from), fetch_coordinates(address_to)
-        ).km,
-        3,
-    )
+    coordinates_from = fetch_coordinates(address_from)
+    coordinates_to = fetch_coordinates(address_to)
+    if (coordinates_from is not None) & (coordinates_to is not None):
+        return round(
+            distance.distance(
+                fetch_coordinates(address_from), fetch_coordinates(address_to)
+            ).km,
+            3,
+        )
+    else:
+        return None
 
 
 def fetch_coordinates_from_yandex(address, apikey=YANDEX_API_KEY):
