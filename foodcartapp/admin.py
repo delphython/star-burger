@@ -116,12 +116,14 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 @admin.register(ProductCategory)
-class ProductAdmin(admin.ModelAdmin):
+class ProductCategoryAdmin(admin.ModelAdmin):
     pass
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    raw_id_fields = ("restaurant",)
+
     inlines = [OrderProductsInline]
 
     def response_change(self, request, obj):
@@ -140,3 +142,7 @@ class OrderProductsAdmin(admin.ModelAdmin):
         "product",
         "quantity",
     ]
+    raw_id_fields = (
+        "order",
+        "product",
+    )
