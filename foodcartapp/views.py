@@ -120,7 +120,7 @@ def register_order(request):
                 order=order,
                 product=product["product"],
                 quantity=product["quantity"],
-                price=product["price"] * product["quantity"],
+                price=product["price"],
             )
             for product in products
         ]
