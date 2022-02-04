@@ -13,7 +13,7 @@ YANDEX_API_KEY = settings.YANDEX_API_KEY
 def fetch_coordinates(address):
     place = Place.objects.filter(address=address).first()
     if place:
-        return (place.lat, place.lon)
+        return place.lat, place.lon
     else:
         coordinates = fetch_coordinates_from_yandex(address)
         if coordinates:
@@ -23,7 +23,7 @@ def fetch_coordinates(address):
                 lat=lat,
                 lon=lon,
             )
-            return (lat, lon)
+            return lat, lon
         else:
             return None
 
