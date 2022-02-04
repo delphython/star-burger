@@ -129,10 +129,8 @@ class OrderAdmin(admin.ModelAdmin):
         if "next" in request.GET:
             if url_has_allowed_host_and_scheme(request.GET["next"], None):
                 return HttpResponseRedirect(iri_to_uri(request.GET["next"]))
-            else:
-                raise
-        else:
-            return res
+            raise
+        return res
 
 
 @admin.register(OrderProducts)
