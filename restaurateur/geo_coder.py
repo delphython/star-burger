@@ -1,15 +1,13 @@
-import os
-
 import requests
 
-from dotenv import load_dotenv
 from geopy import distance
 
 from places.models import Place
 
+from star_burger import settings
 
-load_dotenv()
-YANDEX_API_KEY = os.environ["YANDEX_API_KEY"]
+
+YANDEX_API_KEY = settings.YANDEX_API_KEY
 
 
 def fetch_coordinates(address):
