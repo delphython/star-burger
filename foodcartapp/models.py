@@ -149,7 +149,6 @@ class Order(models.Model):
     )
     address = models.TextField(
         "адрес доставки",
-        blank=True,
     )
     order_status = models.CharField(
         "статус заказа",
