@@ -11,9 +11,13 @@ class Place(models.Model):
     )
     lat = models.FloatField(
         "широта",
+        null=True,
+        blank=True,
     )
     lon = models.FloatField(
         "долгота",
+        null=True,
+        blank=True,
     )
     request_time = models.DateTimeField(
         "время запроса",
