@@ -14,18 +14,15 @@ def fetch_coordinates(address):
     place = Place.objects.filter(address=address).first()
     if place:
         return place.lat, place.lon
-    else:
-        coordinates = fetch_coordinates_from_yandex(address)
-        if coordinates:
-            lat, lon = coordinates
-            Place.objects.create(
-                address=address,
-                lat=lat,
-                lon=lon,
-            )
-            return lat, lon
-        else:
-            return None
+    coordinates = fetch_coordinates_from_yandex(address)
+    if coordinates:
+        lat, lon = coordinates
+        Place.objects.create(
+            address=address,
+            lat=lat,
+            lon=lon,
+        )
+        return lat, lon
 
 
 def get_distance(address_from, address_to):
@@ -38,8 +35,6 @@ def get_distance(address_from, address_to):
             ).km,
             3,
         )
-    else:
-        return None
 
 
 def fetch_coordinates_from_yandex(address, apikey=YANDEX_API_KEY):
