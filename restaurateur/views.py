@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Count
 from django.shortcuts import redirect, render
 from django.views import View
 from django.urls import reverse_lazy
@@ -7,8 +8,16 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
+from functools import reduce
+from operator import and_
 
-from foodcartapp.models import Product, Restaurant, Order
+from foodcartapp.models import (
+    Product,
+    Restaurant,
+    Order,
+    OrderProducts,
+    RestaurantMenuItem,
+)
 from places.geo_coder import get_distance
 
 
@@ -116,14 +125,20 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url="restaurateur:login")
 def view_orders(request):
-    orders = Order.objects.all().annotate_order_cost()
+    orders = Order.objects.prefetch_related(
+        "order_products__product"
+    ).annotate_order_cost()
 
     for order in orders:
-        products = Product.objects.filter(order_products__order=order)
-        restaurants = Restaurant.objects.filter(
-            menu_items__product__in=products,
-            menu_items__availability=True,
-        ).distinct()
+        products = [item.product for item in order.order_products.all()]
+        restaurants = (
+            Restaurant.objects.filter(
+                menu_items__product__in=products,
+                menu_items__availability=True,
+            )
+            .annotate(menu_items_count=Count("menu_items__product__id"))
+            .filter(menu_items_count=len(products))
+        )
 
         for restaurant in restaurants:
             distance = get_distance(restaurant.address, order.address)
