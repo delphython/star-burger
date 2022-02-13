@@ -127,7 +127,7 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderProductsInline]
 
     def response_change(self, request, obj):
-        res = super(OrderAdmin, self).response_change(request, obj)
+        res = super().response_change(request, obj)
         if "next" in request.GET:
             if url_has_allowed_host_and_scheme(request.GET["next"], None):
                 return HttpResponseRedirect(iri_to_uri(request.GET["next"]))
