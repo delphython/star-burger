@@ -146,8 +146,9 @@ class Order(models.Model):
         "телефон",
         db_index=True,
     )
-    address = models.TextField(
+    address = models.CharField(
         "адрес доставки",
+        max_length=200,
     )
     order_status = models.CharField(
         "статус заказа",
