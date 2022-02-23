@@ -28,15 +28,15 @@
     {% for item in order_items %}
       <tr>
         <td>{{item.id}}</td>
-        <td>{{item.get_order_status_display}}</td>
-        <td>{{item.get_payment_method_display}}</td>
+        <td>{{item.order_status}}</td>
+        <td>{{item.payment_method}}</td>
         <td>
           {% if item.restaurants %}
             <details>
               <summary>Показать</summary>
               <ul>
-                {% for restaurant in item.restaurants %}
-                  <li>{{restaurant}} — {{restaurant.distance}}</li>
+                {% for restaurant, distance in item.restaurants.items %}
+                  <li>{{restaurant}} — {{distance}}</li>
                 {% endfor %}
               </ul>
             </details>
