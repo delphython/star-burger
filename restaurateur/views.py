@@ -1,4 +1,4 @@
-from collections import Counter
+from collections import Counter, defaultdict
 from django import forms
 from django.db.models import Count
 from django.shortcuts import redirect, render
@@ -128,6 +128,7 @@ def view_restaurants(request):
 def view_orders(request):
     distance_to_restaurant = []
     order_items = []
+    temp_products_in_restaurants = defaultdict(list)
 
     orders = (
         Order.objects.prefetch_related("order_products__product")
@@ -141,14 +142,10 @@ def view_orders(request):
 
         for product_item in order.order_products.all():
             for restaurant_item in product_item.product.menu_items.all():
-                if product_item.product in products_in_restaurants:
-                    products_in_restaurants[product_item.product].append(
-                        restaurant_item.restaurant
-                    )
-                else:
-                    products_in_restaurants[product_item.product] = [
-                        restaurant_item.restaurant
-                    ]
+                temp_products_in_restaurants[product_item.product].append(
+                    restaurant_item.restaurant
+                )
+        products_in_restaurants = dict(temp_products_in_restaurants)
         for restaurants in products_in_restaurants.values():
             if restaurants_with_all_products:
                 restaurants_with_all_products = list(
