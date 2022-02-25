@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('foodcartapp', '0057_auto_20220212_1045'),
+        ("foodcartapp", "0056_auto_20220205_1254"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='order',
-            name='address',
-            field=models.CharField(max_length=200, verbose_name='адрес доставки'),
+            model_name="order",
+            name="address",
+            field=models.CharField(
+                max_length=200, verbose_name="адрес доставки"
+            ),
         ),
     ]
