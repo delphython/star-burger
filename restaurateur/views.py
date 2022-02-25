@@ -140,16 +140,16 @@ def view_orders(request):
                     restaurant_item.restaurant
                 )
         products_in_restaurants = dict(temp_products_in_restaurants)
+
         for restaurants in products_in_restaurants.values():
-            if restaurants_with_all_products:
-                restaurants_with_all_products = list(
-                    (
-                        Counter(restaurants_with_all_products)
-                        & Counter(restaurants_with_all_products)
-                    ).elements()
-                )
-            else:
+            if not restaurants_with_all_products:
                 restaurants_with_all_products = restaurants
+            restaurants_with_all_products = list(
+                (
+                    Counter(restaurants)
+                    & Counter(restaurants_with_all_products)
+                ).elements()
+            )
 
         for restaurant in restaurants_with_all_products:
             distance = get_distance(restaurant.address, order.address)
