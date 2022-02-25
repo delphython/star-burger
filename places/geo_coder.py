@@ -12,7 +12,7 @@ YANDEX_API_KEY = settings.YANDEX_API_KEY
 
 def fetch_coordinates(address):
     lat, lon = None, None
-    place = Place.objects.filter(address=address).first()
+    place = Place.objects.filter(address=address)[:1][0]
     if place:
         return place.lat, place.lon
     coordinates = fetch_coordinates_from_yandex(address)

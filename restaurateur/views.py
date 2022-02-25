@@ -1,5 +1,5 @@
+from collections import Counter, defaultdict
 from django import forms
-from django.db.models import Count
 from django.shortcuts import redirect, render
 from django.views import View
 from django.urls import reverse_lazy
@@ -8,15 +8,10 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
-from functools import reduce
-from operator import and_
-
 from foodcartapp.models import (
     Product,
     Restaurant,
     Order,
-    OrderProducts,
-    RestaurantMenuItem,
 )
 from places.geo_coder import get_distance
 
@@ -125,35 +120,75 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url="restaurateur:login")
 def view_orders(request):
-    orders = Order.objects.prefetch_related(
-        "order_products__product"
-    ).annotate_order_cost()
+    distance_to_restaurant = []
+    order_items = []
+    temp_products_in_restaurants = defaultdict(list)
+
+    orders = (
+        Order.objects.prefetch_related("order_products__product")
+        .select_related("restaurant")
+        .annotate_order_cost()
+    )
 
     for order in orders:
-        products = [item.product for item in order.order_products.all()]
-        restaurants = (
-            Restaurant.objects.filter(
-                menu_items__product__in=products,
-                menu_items__availability=True,
-            )
-            .annotate(menu_items_count=Count("menu_items__product__id"))
-            .filter(menu_items_count=len(products))
-        )
+        products_in_restaurants = {}
+        restaurants_with_all_products = []
 
-        for restaurant in restaurants:
+        for product_item in order.order_products.all():
+            for restaurant_item in product_item.product.menu_items.all():
+                temp_products_in_restaurants[product_item.product].append(
+                    restaurant_item.restaurant
+                )
+        products_in_restaurants = dict(temp_products_in_restaurants)
+
+        for restaurants in products_in_restaurants.values():
+            if not restaurants_with_all_products:
+                restaurants_with_all_products = restaurants
+            restaurants_with_all_products = list(
+                (
+                    Counter(restaurants)
+                    & Counter(restaurants_with_all_products)
+                ).elements()
+            )
+
+        for restaurant in restaurants_with_all_products:
             distance = get_distance(restaurant.address, order.address)
-            restaurant.distance = (
+            distance_to_restaurant.append(
                 f"{distance} км." if distance else "расстояние неизвестно"
             )
 
-        order.restaurants = sorted(
-            restaurants, key=lambda restaurant: restaurant.distance
+        restaurant_with_distance = dict(
+            zip(restaurants_with_all_products, distance_to_restaurant)
+        )
+
+        sorted_restaurant_with_distance_keys = sorted(
+            restaurant_with_distance, key=restaurant_with_distance.get
+        )
+
+        sorted_restaurant_with_distance = {
+            key: restaurant_with_distance[key]
+            for key in sorted_restaurant_with_distance_keys
+        }
+
+        order_items.append(
+            {
+                "id": order.id,
+                "order_status": order.get_order_status_display,
+                "order_cost": order.order_cost,
+                "firstname": order.firstname,
+                "lastname": order.lastname,
+                "phonenumber": order.phonenumber,
+                "address": order.address,
+                "comment": order.comment,
+                "payment_method": order.get_payment_method_display,
+                "restaurants": sorted_restaurant_with_distance,
+            }
         )
 
     return render(
         request,
         template_name="order_items.html",
         context={
-            "order_items": orders,
+            "order_items": order_items,
         },
     )
