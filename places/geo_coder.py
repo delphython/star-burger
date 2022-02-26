@@ -4,7 +4,7 @@ from geopy import distance
 
 from places.models import Place
 
-from star_burger import settings
+from django.conf import settings
 
 
 YANDEX_API_KEY = settings.YANDEX_API_KEY
