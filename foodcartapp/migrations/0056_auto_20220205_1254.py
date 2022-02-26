@@ -5,14 +5,13 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     def set_order_products_price(apps, schema_editor):
-        def set_order_products_price(apps, schema_editor):
-            OrderProducts = apps.get_model("foodcartapp", "OrderProducts")
-            orderproducts_set = OrderProducts.objects.select_related(
-                "product"
-            ).all()
-            if orderproducts_set.exists():
-                for orderproduct in orderproducts_set.iterator():
-                    orderproduct.price = orderproduct.product.price
+        OrderProducts = apps.get_model("foodcartapp", "OrderProducts")
+        orderproducts_set = OrderProducts.objects.select_related(
+            "product"
+        ).all()
+        if orderproducts_set.exists():
+            for orderproduct in orderproducts_set.iterator():
+                orderproduct.price = orderproduct.product.price
 
     dependencies = [
         ("foodcartapp", "0055_auto_20220204_1735"),
