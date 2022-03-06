@@ -9,10 +9,9 @@ class Migration(migrations.Migration):
         orderproducts_set = OrderProducts.objects.select_related(
             "product"
         ).all()
-        if orderproducts_set.exists():
-            for orderproduct in orderproducts_set.iterator():
-                orderproduct.price = orderproduct.product.price
-                orderproduct.save
+        for orderproduct in orderproducts_set.iterator():
+            orderproduct.price = orderproduct.product.price
+            orderproduct.save
 
     dependencies = [
         ("foodcartapp", "0055_auto_20220204_1735"),
