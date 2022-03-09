@@ -30,8 +30,6 @@ def get_distance(address_from, address_to, places):
     address_to_in_places = [
         item for item in places if item["address"] == address_to
     ]
-    print(address_from_in_places)
-    print(address_to_in_places)
     coordinates_from = (
         (address_from_in_places[0]["lat"], address_from_in_places[0]["lon"])
         if address_from_in_places
