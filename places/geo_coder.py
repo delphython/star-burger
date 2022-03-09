@@ -12,28 +12,39 @@ YANDEX_API_KEY = settings.YANDEX_API_KEY
 
 def fetch_coordinates(address):
     lat, lon = None, None
-    place = Place.objects.filter(address=address)[0]
-    if place:
-        return place.lat, place.lon
     coordinates = fetch_coordinates_from_yandex(address)
     if coordinates:
         lat, lon = coordinates
-    Place.objects.create(
-        address=address,
-        lat=lat,
-        lon=lon,
-    )
+        Place.objects.create(
+            address=address,
+            lat=lat,
+            lon=lon,
+        )
     return lat, lon
 
 
-def get_distance(address_from, address_to):
-    coordinates_from = fetch_coordinates(address_from)
-    coordinates_to = fetch_coordinates(address_to)
-    if (coordinates_from[0] is not None) & (coordinates_to[0] is not None):
+def get_distance(address_from, address_to, places):
+    address_from_in_places = [
+        item for item in places if item["address"] == address_from
+    ]
+    address_to_in_places = [
+        item for item in places if item["address"] == address_to
+    ]
+    print(address_from_in_places)
+    print(address_to_in_places)
+    coordinates_from = (
+        (address_from_in_places[0]["lat"], address_from_in_places[0]["lon"])
+        if address_from_in_places
+        else fetch_coordinates(address_from)
+    )
+    coordinates_to = (
+        (address_to_in_places[0]["lat"], address_to_in_places[0]["lon"])
+        if address_to_in_places
+        else fetch_coordinates(address_to)
+    )
+    if (coordinates_from is not None) & (coordinates_to is not None):
         return round(
-            distance.distance(
-                fetch_coordinates(address_from), fetch_coordinates(address_to)
-            ).km,
+            distance.distance(coordinates_from, coordinates_to).km,
             3,
         )
 

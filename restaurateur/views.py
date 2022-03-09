@@ -14,6 +14,7 @@ from foodcartapp.models import (
     Order,
 )
 from places.geo_coder import get_distance
+from places.models import Place
 
 
 class Login(forms.Form):
@@ -130,6 +131,15 @@ def view_orders(request):
         .annotate_order_cost()
     )
 
+    addresses = set(orders.values_list("address", flat=True))
+    addresses.update(set(Restaurant.objects.values_list("address", flat=True)))
+
+    places = list(
+        Place.objects.filter(address__in=addresses).values(
+            "address", "lat", "lon"
+        )
+    )
+
     for order in orders:
         products_in_restaurants = {}
         restaurants_with_all_products = []
@@ -152,7 +162,11 @@ def view_orders(request):
             )
 
         for restaurant in restaurants_with_all_products:
-            distance = get_distance(restaurant.address, order.address)
+            distance = get_distance(
+                restaurant.address,
+                order.address,
+                places,
+            )
             distance_to_restaurant.append(
                 f"{distance} км." if distance else "расстояние неизвестно"
             )
