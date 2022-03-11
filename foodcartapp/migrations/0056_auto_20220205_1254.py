@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
         ).all()
         for orderproduct in orderproducts_set.iterator():
             orderproduct.price = orderproduct.product.price
-            orderproduct.save
+            orderproduct.save()
 
     dependencies = [
         ("foodcartapp", "0055_auto_20220204_1735"),
