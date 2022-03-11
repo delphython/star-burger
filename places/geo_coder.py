@@ -11,15 +11,13 @@ YANDEX_API_KEY = settings.YANDEX_API_KEY
 
 
 def fetch_coordinates(address):
-    lat, lon = None, None
     coordinates = fetch_coordinates_from_yandex(address)
-    if coordinates:
-        lat, lon = coordinates
-        Place.objects.create(
-            address=address,
-            lat=lat,
-            lon=lon,
-        )
+    lat, lon = coordinates if coordinates else None
+    Place.objects.create(
+        address=address,
+        lat=lat,
+        lon=lon,
+    )
     return lat, lon
 
 
@@ -40,7 +38,7 @@ def get_distance(address_from, address_to, places):
         if address_to_in_places
         else fetch_coordinates(address_to)
     )
-    if (coordinates_from is not None) & (coordinates_to is not None):
+    if any(coordinates_from) & any(coordinates_to):
         return round(
             distance.distance(coordinates_from, coordinates_to).km,
             3,
