@@ -47,6 +47,7 @@ def product_list_api(request):
     dumped_products = []
     for product in products:
         dumped_product = {
+<<<<<<< HEAD
             "id": product.id,
             "name": product.name,
             "price": product.price,
@@ -61,6 +62,22 @@ def product_list_api(request):
                 "id": product.id,
                 "name": product.name,
             },
+=======
+            'id': product.id,
+            'name': product.name,
+            'price': product.price,
+            'special_status': product.special_status,
+            'description': product.description,
+            'category': {
+                'id': product.category.id,
+                'name': product.category.name,
+            } if product.category else None,
+            'image': product.image.url,
+            'restaurant': {
+                'id': product.id,
+                'name': product.name,
+            }
+>>>>>>> 6a2ad35fdf741a554800b7012eecc321be4192fa
         }
         dumped_products.append(dumped_product)
     return JsonResponse(
