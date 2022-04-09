@@ -146,6 +146,22 @@ Parcel будет следить за файлами в каталоге `bundle
 ./node_modules/.bin/parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 ```
 
+Установить СУБД PosgreSQL (инструкция для Ubuntu 18.04):
+```sh
+sudo apt update
+sudo apt install libpq-dev postgresql postgresql-contrib
+```
+Создать пользователя для БД и саму БД:
+```sh
+sudo -u postgres psql
+CREATE DATABASE star_burger;
+CREATE USER starburgeruser WITH PASSWORD 'your_password';
+ALTER ROLE starburgeruser SET client_encoding TO 'utf8';
+ALTER ROLE starburgeruser SET default_transaction_isolation TO 'read committed';
+ALTER ROLE starburgeruser SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE star_burger TO starburgeruser;
+```
+
 Настроить бэкенд: создать файл `.env` в каталоге `star_burger/` со следующими настройками:
 
 - `DEBUG` — дебаг-режим. Поставьте `False`.
@@ -154,6 +170,11 @@ Parcel будет следить за файлами в каталоге `bundle
 - `YANDEX_API_KEY` — API ключ HTTP Геокодера. Получите на [Яндекс Кабинет разработчика](https://developer.tech.yandex.ru/services/).
 - `ROLLBAR_API_KEY` — API ключ Rollbar. Получите на [rollbar.com](https://rollbar.com/). Вам нужен `post_server_item` токен.
 - `ROLLBAR_ENVIRONMENT` — настройка переменной environment в Rollbar, которая задаёт название окружения для фильтрации сообщений в логах. Для prod-версии поставьте `production`.
+- `PSQL_USER` — пользователь для доступа к БД. Поставьте `starburgeruser`.
+- `PSQL_PASS` — пароль пользователя для доступа к БД. Поставьте тот пароль, который вводили при установке СУБД.
+- `PSQL_HOST` — имя или ip адрес, где установлена СУБД. Поставьте `localhost`.
+- `PSQL_PORT` — порт СУБД. Поставьте `5432`.
+- `PSQL_NAME` — имя БД. Поставьте `star_burger`.
 
 ## Цели проекта
 
