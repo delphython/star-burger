@@ -60,6 +60,15 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
+Создайте аакаунт на [rollbar.com](https://rollbar.com/). Получите токен и добавьте его в `env` файл:
+```
+export ROLLBAR_API_KEY="123d08f456a789fc0d12345e67fdcc1"
+```
+Также необходимо настроить переменную environment в Rollbar, которая задаёт название окружения для фильтрации сообщений в логах, для этого добавьте его в `env` файл:
+```
+export ROLLBAR_ENVIRONMENT="development"
+```
+
 Запустите сервер:
 
 ```sh
@@ -143,6 +152,8 @@ Parcel будет следить за файлами в каталоге `bundle
 - `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте. Не стоит использовать значение по-умолчанию, **замените на своё**.
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
 - `YANDEX_API_KEY` — API ключ HTTP Геокодера. Получите на [Яндекс Кабинет разработчика](https://developer.tech.yandex.ru/services/).
+- `ROLLBAR_API_KEY` — API ключ Rollbar. Получите на [rollbar.com](https://rollbar.com/).
+- `ROLLBAR_ENVIRONMENT` — настройка переменной environment в Rollbar, которая задаёт название окружения для фильтрации сообщений в логах. Для prod-версии поставьте `production`.
 
 ## Цели проекта
 
