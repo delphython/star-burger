@@ -140,12 +140,6 @@ Parcel будет следить за файлами в каталоге `bundle
 
 ## Как запустить prod-версию сайта
 
-Собрать фронтенд:
-
-```sh
-./node_modules/.bin/parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
-```
-
 Установить СУБД PosgreSQL (инструкция для Ubuntu 18.04):
 ```sh
 sudo apt update
@@ -175,6 +169,11 @@ GRANT ALL PRIVILEGES ON DATABASE star_burger TO starburgeruser;
 - `PSQL_HOST` — имя или ip адрес, где установлена СУБД. Поставьте `localhost`.
 - `PSQL_PORT` — порт СУБД. Поставьте `5432`.
 - `PSQL_NAME` — имя БД. Поставьте `star_burger`.
+
+Запустить скрипт деплоя на prod-сервере:
+```sh
+./deploy_star_burger.sh
+```
 
 ## Цели проекта
 
