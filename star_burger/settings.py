@@ -132,6 +132,7 @@ YANDEX_API_KEY = os.environ["YANDEX_API_KEY"]
 ROLLBAR = {
     "access_token": os.environ["ROLLBAR_API_KEY"],
     "environment": os.environ["ROLLBAR_ENVIRONMENT"],
+    "branch": "master",
     "root": BASE_DIR,
 }
 rollbar.init(**ROLLBAR)
