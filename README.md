@@ -60,15 +60,6 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-Создайте аакаунт на [rollbar.com](https://rollbar.com/). Получите токен и добавьте его в `env` файл:
-```
-export ROLLBAR_API_KEY="123d08f456a789fc0d12345e67fdcc1"
-```
-Также необходимо настроить переменную environment в Rollbar, которая задаёт название окружения для фильтрации сообщений в логах, для этого добавьте его в `env` файл:
-```
-export ROLLBAR_ENVIRONMENT="development"
-```
-
 Запустите сервер:
 
 ```sh
@@ -172,8 +163,16 @@ GRANT ALL PRIVILEGES ON DATABASE star_burger TO starburgeruser;
 
 Запустить скрипт деплоя на prod-сервере:
 ```sh
-./deploy_star_burger.sh
+/root/deploy_star_burger.sh
 ```
+
+Сайт расположен по адресу [https://star-burger.fun](https://star-burger.fun)
+
+## Доступ к prod-серверу по ssh.
+```sh
+ssh root@2.57.186.193
+```
+
 
 ## Цели проекта
 
