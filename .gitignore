@@ -144,3 +144,6 @@ dmypy.json
 cython_debug/
 
 .parcel-cache/
+
+# Other project files
+dumpdata.json
