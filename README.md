@@ -161,6 +161,11 @@ GRANT ALL PRIVILEGES ON DATABASE star_burger TO starburgeruser;
 - `PSQL_PORT` — порт СУБД. Поставьте `5432`.
 - `PSQL_NAME` — имя БД. Поставьте `star_burger`.
 
+Скопировать скрипт деплоя из папки с проектом в каталог `/root`:
+```sh
+cp /opt/star-burger/deploy_star_burger.sh /root
+```
+
 Запустить скрипт деплоя на prod-сервере:
 ```sh
 /root/deploy_star_burger.sh
